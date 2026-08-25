@@ -12,7 +12,7 @@ const cors = require("cors")
 
 
 
-const PORT=3000;
+const PORT=5000;
 const app = express();
 
 app.use(cors({
