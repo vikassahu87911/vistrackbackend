@@ -15,7 +15,7 @@ exports.createCompany = async(req,res)=>{
             message:"bad request"
         })
     }
-
+try{
    await sendMail(
     data.email,
     "Company Created Successfully",
@@ -25,7 +25,9 @@ exports.createCompany = async(req,res)=>{
     <p>Username: ${data.organisation_name} </p>
     <p>password: ${plainpassword} </p>
     `
-);
+);}catch(error){
+    console.error("email sending failed:",error)
+}
 
     return res.status(200).json({
         success:true,
