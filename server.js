@@ -12,11 +12,11 @@ const cors = require("cors")
 
 
 
-const PORT=3000;
+const PORT=5000;
 const app = express();
 
 app.use(cors({
-    origin:""
+    origin:"http://localhost:3000"
 }))
 
 
@@ -157,7 +157,7 @@ app.use('/', contactrouter);
 mongoose.connect(process.env.MONGO_URI).then(async()=>{
     await mongoose.model("visitorDetail").syncIndexes();
     await mongoose.model("admrecord").syncIndexes();
-        app.listen(PORT,()=>{
+        app.listen(PORT,"0.0.0.0",()=>{
             console.log(`server is live at port http://localhost:${PORT} and connected to DB`)
         });
     }).catch((err)=>{
