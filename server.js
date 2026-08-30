@@ -16,7 +16,7 @@ const PORT=5000;
 const app = express();
 
 app.use(cors({
-    origin:"https://viztrack.netlify.app/"
+    origin:"https://viztrack.netlify.app"
 }))
 
 
