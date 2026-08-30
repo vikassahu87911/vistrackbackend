@@ -36,7 +36,7 @@ const managerSchema = new schema({
     Venue:{
         type:String,
         required: true,
-        default:"chinkado"
+        default:"not set"
     },
     DOV:{
         type: Date,
