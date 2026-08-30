@@ -9,14 +9,14 @@ exports.createCompany = async(req,res)=>{
     const plainpassword = `${rdata.organisation_name}${dd}${mm}${yyyy}`;
     rdata.password = plainpassword;
     const data =  await admmodel.create(rdata)
-    if(!rdata){
+    if(!data){
         return res.status(400).json({
             success:false,
             message:"bad request"
         })
     }
 try{
-   await sendMail(
+    sendMail(
     data.email,
     "Company Created Successfully",
     `

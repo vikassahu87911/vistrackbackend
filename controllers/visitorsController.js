@@ -9,7 +9,11 @@ exports.createVisitor = async (req,res)=>{
     data.password = password;
     console.log(data)
     const newvisitor = await visitorschema.create(data); 
-    await sendMail(
+         res.status(200).json({
+        message: "visitor created successfully",
+        data: newvisitor
+    })
+    sendMail(
     newvisitor.visitorEmail,
     "visit Created Successfully",
     `
@@ -20,12 +24,13 @@ exports.createVisitor = async (req,res)=>{
     <p> unique id for login : ${newvisitor.orgid}</p>
     <p>your otp: ${newvisitor.uniqueno} needs to be verified during visit, pls share tp the concerned person</p>
     `
-    );
+    ).then(()=>{
+        console.log("email sent successfully")
+    }).catch((error)=>{
+        console.error("email sending failed",error)
+    });
 
-    return res.status(200).json({
-        message: "visitor created successfully",
-        data: newvisitor
-    })
+    
 
    }catch(error){
     
