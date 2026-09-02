@@ -9,6 +9,7 @@ const visitorrouter = require('./routers/visitorsRoute');
 const admrouter = require('./routers/admRoute');
 const contactrouter = require('./routers/contactRoute')
 const cors = require("cors")
+const jwt = require('jsonwebtoken');
 
 
 
@@ -16,6 +17,7 @@ const PORT=5000;
 const app = express();
 
 app.use(cors({
+    // origin:"http://localhost:3000"
     origin:"https://viztrack.netlify.app"
 }))
 
@@ -36,9 +38,20 @@ app.post("/login/admin", async(req,res)=>{
         userid===process.env.ADM_ID &&
         password===process.env.ADM_PASSWORD
     ){
+        const token = jwt.sign(
+            {
+                userid:userid,
+                role:"admin"
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn:"1h"
+            }
+        );
         return res.json({
             success:true,
-            message:"Login successful"
+            message:"Login successful",
+            token:token
         });
     }
     res.status(401).json({
@@ -52,17 +65,18 @@ app.post("/login/manager",async(req,res)=>{
     const manager = await administrativemodel.findOne({
         email
     });
+
+     if(!manager){
+        return res.status(401).json({
+            success:false,
+            message:"invalid details"
+        });
+    }
+
     if(manager.status!=="Active"){
         return res.status(401).json({
             success:false,
             message:"You are Inactive Pls contact administrator"
-        });
-    }
-
-    if(!manager){
-        return res.status(401).json({
-            success:false,
-            message:"invalid details"
         });
     }
 
@@ -74,11 +88,24 @@ app.post("/login/manager",async(req,res)=>{
         });
     }
 
+    //create jwt
+    const token = jwt.sign(
+        {
+            userid:manager._id,
+            role:"manager"
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn:"1h"
+        }
+    )
+
     return res.json({
         companyname:manager.organisation_name,
         companyId:manager._id,
         success:true,
-        message:"Login successful"
+        message:"Login successful",
+        token:token
     })
 })
 
@@ -104,11 +131,25 @@ app.post("/login/visitor",async(req,res)=>{
             message:"invalid password"
         });
     }
+
+    // creating visitortoken
+
+    const token = jwt.sign(
+        {
+            userid:visitor._id,
+            role:"visitor"
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn:"1h"
+        }
+    )
     return res.json({
         
         success:true,
         message:"Login successful",
-        visitor:visitor
+        visitorid:visitor._id,
+        token:token
     })
 
 })
@@ -118,16 +159,18 @@ app.post("/login/security",async(req,res)=>{
     const security = await administrativemodel.findOne({
         email
     });
+
+     if(!security){
+        return res.status(401).json({
+            success:false,
+            message:"invalid details"
+        });
+    }
+
     if(security.status!=="Active"){
         return res.status(401).json({
             success:false,
             message:"You are set to inactive contact Manager"
-        });
-    }
-    if(!security){
-        return res.status(401).json({
-            success:false,
-            message:"invalid details"
         });
     }
 
@@ -139,10 +182,24 @@ app.post("/login/security",async(req,res)=>{
         });
     }
 
+
+    //create json token
+    const token = jwt.sign(
+        {
+            userid: security._id,
+            role:"security"
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn:"1h"
+        }
+    )
+
     return res.json({
         companyId:security._id,
         success:true,
-        message:"Login successful"
+        message:"Login successful",
+        token:token
     })
 })
 

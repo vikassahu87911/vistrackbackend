@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 
+
 const schema = mongoose.Schema;
 
 const managerSchema = new schema({
@@ -35,8 +36,7 @@ const managerSchema = new schema({
     },
     Venue:{
         type:String,
-        required: true,
-        default:"not set"
+        default:null
     },
     DOV:{
         type: Date,
@@ -63,6 +63,14 @@ const managerSchema = new schema({
     checkouttime:{
         type: mongoose.Schema.Types.Mixed,
         default: null
+    },
+    qrtoken:{
+        type:String,
+        unique:true
+    },
+    vphoto:{
+        type:String,
+        default:null
     }
 
    

@@ -1,13 +1,14 @@
 const express = require('express');
 const sendMail = require('../emailfunction/mail')
 const visitorschema = require('../models/model')
+const {v4:uuidv4} = require("uuid")
 exports.createVisitor = async (req,res)=>{
     
     try{
     const data = req.body;
     const password = data.Name_of_visitor.substring(0,3).toUpperCase()+data.phone;
     data.password = password;
-    console.log(data)
+    data.qrtoken = uuidv4();
     const newvisitor = await visitorschema.create(data); 
          res.status(200).json({
         message: "visitor created successfully",
@@ -126,3 +127,40 @@ exports.updateVisitorById = async(req,res) =>{
    
 
 }
+
+exports.verifyQR = async (req, res) => {
+
+    try {
+
+        const { qrtoken } = req.body;
+
+        const visitor = await visitorschema.findOne({
+            qrtoken: qrtoken
+        });
+
+        if (!visitor) {
+            return res.status(404).json({
+                message: "Invalid QR code"
+            });
+        }
+
+        if (visitor.Status !== "active") {
+            return res.status(403).json({
+                message: "Visitor is not approved"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Visitor verified successfully",
+            visitor: visitor
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+};

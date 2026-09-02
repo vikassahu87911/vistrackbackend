@@ -1,16 +1,24 @@
 const express = require('express');
-const { createVisitor, getAllVisitors, deleteVisitorbyId, updateVisitorById, getVisitorById } = require('../controllers/visitorsController');
+const { createVisitor, getAllVisitors, deleteVisitorbyId, updateVisitorById, getVisitorById, verifyQR } = require('../controllers/visitorsController');
+const verifyManagerToken = require('../middleware/verifymanagertoken');
+const verifyManagerSecurityToken = require('../middleware/verifymanagersecuritytoken');
+const verifyManagerVisitorToken = require('../middleware/verifymanagervisitortoken');
 const router = express.Router();
+  
+verifyQR
+router.post('/visitors',verifyManagerToken,createVisitor)
 
+router.get('/visitors/:id',verifyManagerVisitorToken, getVisitorById)
 
-router.post('/visitors',createVisitor)
+router.get('/visitors/company/:orgid',verifyManagerSecurityToken, getAllVisitors)
 
-router.get('/visitors/:id', getVisitorById)
+router.delete('/visitors/:id',verifyManagerToken,deleteVisitorbyId)
 
-router.get('/visitors/company/:orgid', getAllVisitors)
+router.patch('/visitors/:id',verifyManagerSecurityToken,updateVisitorById)
 
-router.delete('/visitors/:id',deleteVisitorbyId)
-
-router.patch('/visitors/:id',updateVisitorById)
+router.post(
+    "/visitors/verify-qr",
+    verifyQR
+);
 
 module.exports = router;
