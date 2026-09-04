@@ -71,6 +71,10 @@ const managerSchema = new schema({
     vphoto:{
         type:String,
         default:null
+    },
+    mvphoto:{
+        type:String,
+        default:null
     }
 
    

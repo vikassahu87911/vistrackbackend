@@ -144,7 +144,7 @@ exports.verifyQR = async (req, res) => {
             });
         }
 
-        if (visitor.Status !== "active") {
+        if (visitor.Status !== "active" && visitor.Status !== "checkedin") {
             return res.status(403).json({
                 message: "Visitor is not approved"
             });

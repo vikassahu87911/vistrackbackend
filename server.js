@@ -17,13 +17,13 @@ const PORT=5000;
 const app = express();
 
 app.use(cors({
-    // origin:"http://localhost:3000"
-    origin:"https://viztrack.netlify.app"
+    origin:"http://localhost:3000"
+    // origin:"https://viztrack.netlify.app"
 }))
 
 
 
-app.use(express.json());
+app.use(express.json({limit:'10mb'}));
 
 app.get("/",(req,res)=>{
      return res.status(200).json({
@@ -114,7 +114,7 @@ app.post("/login/visitor",async(req,res)=>{
     const visitor = await visitorDetail.findOne({
         visitorEmail,
         orgid,
-        Status:"active"
+        Status:{ $in: ["active", "checkedin"] }
     })
     if(!visitor){
         return res.status(401).json({
