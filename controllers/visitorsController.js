@@ -2,6 +2,8 @@ const express = require('express');
 const sendMail = require('../emailfunction/mail')
 const visitorschema = require('../models/model')
 const {v4:uuidv4} = require("uuid")
+const sendSMS = require('../utils/twilio')
+
 exports.createVisitor = async (req,res)=>{
     
     try{
@@ -14,6 +16,22 @@ exports.createVisitor = async (req,res)=>{
         message: "visitor created successfully",
         data: newvisitor
     })
+
+        sendSMS(
+        newvisitor.phone,
+        `your visitor pass has been created successfully at ${newvisitor.Venue}
+        pls login to viztrack to download pdf badge,
+        UID - ${newvisitor.visitorEmail},
+        password - ${password},
+        uniqueid - ${newvisitor.orgid},
+        otp - ${newvisitor.uniqueno}
+        `
+    ).then(()=>{
+        console.log("SMS sent successfully")
+    }).catch((error)=>{
+        console.error("SMS sending failed",error)
+    });
+
     sendMail(
     newvisitor.visitorEmail,
     "visit Created Successfully",
@@ -120,10 +138,35 @@ exports.updateVisitorById = async(req,res) =>{
             message: "no data found"
         })
     }
-    return res.status(200).json({
+        res.status(200).json({
         message:"updated successfully",
         data: data
     })
+    try{
+    if(data.Status === "cancelled"){
+       await sendSMS(
+        data.phone,
+        `your visitor pass has been cancelled successfully at ${data.Venue}
+        `
+    )}
+    if(data.Status === "checkedin"){
+       await sendSMS(
+        data.phone,
+        `checked in successfully at ${data.Venue}
+        `
+    )
+    }
+    if(data.Status === "checkedout"){
+       await sendSMS(
+        data.phone,
+        `checkedout successfully at ${data.Venue}
+        `
+    )
+    }
+      console.log("SMS sent successfully")
+    }catch(error){(error)=>{
+        console.error("SMS sending failed",error)
+    }};
    
 
 }

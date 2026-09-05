@@ -36,7 +36,7 @@ const managerSchema = new schema({
     },
     Venue:{
         type:String,
-        default:null
+        default: null
     },
     DOV:{
         type: Date,

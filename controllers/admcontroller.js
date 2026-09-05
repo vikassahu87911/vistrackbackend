@@ -1,5 +1,6 @@
 const admmodel = require('../models/administrativemodel')
 const sendMail = require('../emailfunction/mail')
+
 exports.createCompany = async(req,res)=>{
     const rdata = req.body;
     const today = new Date();
@@ -15,6 +16,13 @@ exports.createCompany = async(req,res)=>{
             message:"bad request"
         })
     }
+
+        res.status(200).json({
+        success:true,
+        message:"company created successfully",
+        "created company":data
+    })
+
 try{
     sendMail(
     data.email,
@@ -29,11 +37,7 @@ try{
     console.error("email sending failed:",error)
 }
 
-    return res.status(200).json({
-        success:true,
-        message:"company created successfully",
-        "created company":data
-    })
+    
 }
 
 exports.getAllCompany = async(req,res)=>{

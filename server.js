@@ -4,7 +4,6 @@ require('dotenv').config();
 const bcrypt = require('bcrypt')
 const administrativemodel = require('./models/administrativemodel')
 const visitorDetail = require('./models/model')
-
 const visitorrouter = require('./routers/visitorsRoute');
 const admrouter = require('./routers/admRoute');
 const contactrouter = require('./routers/contactRoute')
@@ -88,7 +87,6 @@ app.post("/login/manager",async(req,res)=>{
         });
     }
 
-    //create jwt
     const token = jwt.sign(
         {
             userid:manager._id,
@@ -132,7 +130,6 @@ app.post("/login/visitor",async(req,res)=>{
         });
     }
 
-    // creating visitortoken
 
     const token = jwt.sign(
         {
@@ -183,7 +180,6 @@ app.post("/login/security",async(req,res)=>{
     }
 
 
-    //create json token
     const token = jwt.sign(
         {
             userid: security._id,

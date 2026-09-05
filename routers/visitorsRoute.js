@@ -5,7 +5,6 @@ const verifyManagerSecurityToken = require('../middleware/verifymanagersecurityt
 const verifyManagerVisitorToken = require('../middleware/verifymanagervisitortoken');
 const router = express.Router();
   
-verifyQR
 router.post('/visitors',verifyManagerToken,createVisitor)
 
 router.get('/visitors/:id',verifyManagerVisitorToken, getVisitorById)
